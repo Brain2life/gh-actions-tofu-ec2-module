@@ -1,2 +1,3 @@
 # gh-actions-tofu-ec2-module
-Tofu/Terraform module with AWS IAM roles that allows GitHub Actions CI to deploy EC2 instances
+
+This repository contains OpenTofu/Terraform module that allows GitHub actions CI to deploy EC2 instances. For more information about example usage of this module, see exercise #8 from [github.com/Brain2life/github-ci-test](https://github.com/Brain2life/github-ci-test) 

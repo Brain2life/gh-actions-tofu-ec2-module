@@ -32,8 +32,8 @@ variable "enable_iam_role_for_ec2_plan" {
   default     = false
 }
 
-# variable "enable_iam_role_for_apply" {
-#   description = "If set to true, create the IAM role for running 'apply' on the lambda-sample module"
-#   type        = string
-#   default     = false
-# }
+variable "enable_iam_role_for_ec2_apply" {
+  description = "If set to true, create the IAM role for running 'apply' on the lambda-sample module"
+  type        = string
+  default     = false
+}

@@ -82,80 +82,80 @@ data "aws_iam_policy_document" "plan_ec2_app" {
 #   state_bucket_arn = "arn:aws:s3:::${var.tofu_state_bucket}"
 # }
 
-# resource "aws_iam_role" "lambda_deploy_apply" {
-#   count = var.enable_iam_role_for_apply ? 1 : 0
+resource "aws_iam_role" "ec2_deploy_apply" {
+  count = var.enable_iam_role_for_ec2_apply ? 1 : 0
 
-#   name               = "${var.name}-apply"
-#   assume_role_policy = data.aws_iam_policy_document.assume_role_policy_for_apply[0].json
-# }
+  name               = "${var.name}-apply"
+  assume_role_policy = data.aws_iam_policy_document.assume_role_policy_for_ec2_apply[0].json
+}
 
-# data "aws_iam_policy_document" "assume_role_policy_for_apply" {
-#   count = var.enable_iam_role_for_apply ? 1 : 0
+data "aws_iam_policy_document" "assume_role_policy_for_ec2_apply" {
+  count = var.enable_iam_role_for_ec2_apply ? 1 : 0
 
-#   statement {
-#     actions = ["sts:AssumeRoleWithWebIdentity"]
-#     effect  = "Allow"
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect  = "Allow"
 
-#     principals {
-#       identifiers = [var.oidc_provider_arn]
-#       type        = "Federated"
-#     }
+    principals {
+      identifiers = [var.oidc_provider_arn]
+      type        = "Federated"
+    }
 
-#     condition {
-#       test     = "StringEquals"
-#       variable = "token.actions.githubusercontent.com:sub"
-#       values   = ["repo:${var.github_repo}:ref:refs/heads/main"]
-#     }
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:sub"
+      values   = ["repo:${var.github_repo}:ref:refs/heads/main"]
+    }
 
-#     condition {
-#       test     = "StringEquals"
-#       variable = "token.actions.githubusercontent.com:aud"
-#       values   = ["sts.amazonaws.com"]
-#     }
-#   }
-# }
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:aud"
+      values   = ["sts.amazonaws.com"]
+    }
+  }
+}
 
-# resource "aws_iam_role_policy" "apply_serverless_app" {
-#   count  = var.enable_iam_role_for_apply ? 1 : 0
-#   role   = aws_iam_role.lambda_deploy_apply[0].id
-#   policy = data.aws_iam_policy_document.apply_serverless_app[0].json
-# }
+resource "aws_iam_role_policy" "apply_ec2_app" {
+  count  = var.enable_iam_role_for_ec2_apply ? 1 : 0
+  role   = aws_iam_role.ec2_deploy_apply[0].id
+  policy = data.aws_iam_policy_document.apply_ec2_app[0].json
+}
 
-# data "aws_iam_policy_document" "apply_serverless_app" {
-#   count = var.enable_iam_role_for_apply ? 1 : 0
+data "aws_iam_policy_document" "apply_ec2_app" {
+  count = var.enable_iam_role_for_ec2_apply ? 1 : 0
 
-#   statement {
-#     sid    = "IamPermissions"
-#     effect = "Allow"
-#     actions = [
-#       "iam:CreateRole",
-#       "iam:DeleteRole",
-#       "iam:UpdateRole",
-#       "iam:PassRole",
-#       "iam:List*Role*",
-#       "iam:Get*Role*"
-#     ]
-#     resources = ["arn:aws:iam::*:role/${var.lambda_base_name}*"]
-#   }
+  statement {
+    sid    = "IamPermissions"
+    effect = "Allow"
+    actions = [
+      "iam:CreateRole",
+      "iam:DeleteRole",
+      "iam:UpdateRole",
+      "iam:PassRole",
+      "iam:List*Role*",
+      "iam:Get*Role*"
+    ]
+    resources = ["arn:aws:iam::*:role/${var.ec2_base_name}*"]
+  }
 
-#   statement {
-#     sid       = "ServerlessPermissions"
-#     effect    = "Allow"
-#     actions   = ["lambda:*", "apigateway:*", "apigatewayv2:*"]
-#     resources = ["*"]
-#   }
+  statement {
+    sid       = "EC2DescribePermissions"
+    effect    = "Allow"
+    actions   = ["ec2:DescribeInstances", "ec2:DescribeImages", "ec2:DescribeInstanceTypes", "ec2:DescribeKeyPairs", "ec2:DescribeVpcs", "ec2:DescribeSubnets", "ec2:DescribeSecurityGroups"]
+    resources = ["*"]
+  }
 
-#   statement {
-#     sid       = "TofuStateS3Permissions"
-#     effect    = "Allow"
-#     actions   = ["s3:*"]
-#     resources = [local.state_bucket_arn, "${local.state_bucket_arn}/*"]
-#   }
+  statement {
+    sid       = "KeyAndSGCreatePermissions"
+    effect    = "Allow"
+    actions   = ["ec2:CreateSecurityGroup", "ec2:AuthorizeSecurityGroupIngress", "ec2:CreateKeyPair"]
+    resources = ["*"]
+  }
 
-#   statement {
-#     sid       = "TofuStateDynamoPermissions"
-#     effect    = "Allow"
-#     actions   = ["dynamodb:*"]
-#     resources = ["arn:aws:dynamodb:*:*:table/${var.tofu_state_dynamodb_table}"]
-#   }
-# }
+  statement {
+    sid       = "RunEC2Permissions"
+    effect    = "Allow"
+    actions   = ["ec2:RunInstances"]
+    resources = ["*"]
+  }
+}

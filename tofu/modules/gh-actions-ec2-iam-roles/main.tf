@@ -78,10 +78,6 @@ data "aws_iam_policy_document" "plan_ec2_app" {
   }
 }
 
-# locals {
-#   state_bucket_arn = "arn:aws:s3:::${var.tofu_state_bucket}"
-# }
-
 resource "aws_iam_role" "ec2_deploy_apply" {
   count = var.enable_iam_role_for_ec2_apply ? 1 : 0
 

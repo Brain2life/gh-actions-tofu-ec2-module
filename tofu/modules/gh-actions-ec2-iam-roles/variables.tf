@@ -18,7 +18,7 @@ variable "github_repo" {
 }
 
 variable "ec2_base_name" {
-  description = "The base name used for the lambda-sample app: especially its IAM roles. The IAM roles will have read or read & write access to this IAM role."
+  description = "The base name used for the ec2-sample app: especially its IAM roles. The IAM roles will have read or read & write access to this IAM role."
   type        = string
 }
 
@@ -27,13 +27,13 @@ variable "ec2_base_name" {
 # ---------------------------------------------------------------------------------------------------------------------
 
 variable "enable_iam_role_for_ec2_plan" {
-  description = "If set to true, create the IAM role for running 'plan' on the lambda-sample module"
+  description = "If set to true, create the IAM role for running 'plan' on the ec2 module"
   type        = string
   default     = false
 }
 
 variable "enable_iam_role_for_ec2_apply" {
-  description = "If set to true, create the IAM role for running 'apply' on the lambda-sample module"
+  description = "If set to true, create the IAM role for running 'apply' on the ec2 module"
   type        = string
   default     = false
 }

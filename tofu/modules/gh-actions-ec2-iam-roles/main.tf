@@ -149,6 +149,13 @@ data "aws_iam_policy_document" "apply_ec2_app" {
   }
 
   statement {
+    sid       = "CreateEC2TagsPermission"
+    effect    = "Allow"
+    actions   = ["ec2:CreateTags"]
+    resources = ["*"]
+  }
+
+  statement {
     sid       = "RunEC2Permissions"
     effect    = "Allow"
     actions   = ["ec2:RunInstances"]

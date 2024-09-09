@@ -137,7 +137,7 @@ data "aws_iam_policy_document" "apply_ec2_app" {
   statement {
     sid       = "EC2DescribePermissions"
     effect    = "Allow"
-    actions   = ["ec2:DescribeInstances", "ec2:DescribeImages", "ec2:DescribeInstanceTypes", "ec2:DescribeKeyPairs", "ec2:DescribeVpcs", "ec2:DescribeSubnets", "ec2:DescribeSecurityGroups", "ec2:DescribeTags"]
+    actions   = ["ec2:Describe*"]
     resources = ["*"]
   }
 
